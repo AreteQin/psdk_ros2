@@ -1,3 +1,13 @@
+## Dependences
+```Bash
+sudo apt-get install nlohmann-json3-dev
+```
+
+## Usage
+```Bash
+
+```
+
 # psdk_ros2
 
 **psdk_ros2** is an open-source ROS 2 wrapper that brings DJI's [Payload-SDK](https://github.com/dji-sdk/Payload-SDK) libraries capabilities into the robotics ecosystem. 
