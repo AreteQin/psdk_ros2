@@ -32,11 +32,13 @@ namespace psdk_ros2
 PSDKWrapper::PSDKWrapper(const std::string &node_name)
     : rclcpp_lifecycle::LifecycleNode(
           node_name, "",
-          rclcpp::NodeOptions().use_intra_process_comms(true).arguments(
-              {"--ros-args", "-r",
-               node_name + ":" + std::string("__node:=") + node_name}))
+          rclcpp::NodeOptions().use_intra_process_comms(true))
+// .arguments(
+//               {"--ros-args", "-r",
+//                node_name + ":" + std::string("__node:=") + node_name}))
 {
   RCLCPP_INFO(get_logger(), "Creating Constructor PSDKWrapper");
+
   declare_parameter("app_name", rclcpp::ParameterValue(""));
   declare_parameter("app_id", rclcpp::ParameterValue(""));
   declare_parameter("app_key", rclcpp::ParameterValue(""));
