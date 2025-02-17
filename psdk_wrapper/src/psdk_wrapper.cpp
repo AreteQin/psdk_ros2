@@ -39,6 +39,7 @@ PSDKWrapper::PSDKWrapper(const std::string &node_name)
 {
   RCLCPP_INFO(get_logger(), "Creating Constructor PSDKWrapper");
 
+  // Read parameters from command line arguments
   declare_parameter("app_name", rclcpp::ParameterValue(""));
   declare_parameter("app_id", rclcpp::ParameterValue(""));
   declare_parameter("app_key", rclcpp::ParameterValue(""));

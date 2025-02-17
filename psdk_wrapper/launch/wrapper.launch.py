@@ -22,6 +22,8 @@ def generate_launch_description():
     """Launch the psdk_wrapper_node."""
 
     # Create LaunchConfiguration variables
+    # Each declared launch argument can be passed from the command line when launching the file,
+    # or the default value is used.
     namespace = LaunchConfiguration("namespace")
     link_config_file_path = LaunchConfiguration("link_config_file_path")
     psdk_params_file_path = LaunchConfiguration("psdk_params_file_path")
