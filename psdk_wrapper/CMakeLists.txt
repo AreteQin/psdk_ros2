@@ -39,7 +39,7 @@ include(FetchContent)
 # Declare the content to fetch
 FetchContent_Declare(
   Payload_SDK
-  GIT_REPOSITORY https://github.com/AreteQin/PayloadSDK.git
+  GIT_REPOSITORY git@github.com:AreteQin/PayloadSDK.git
 #  GIT_TAG V3.8.1
         GIT_TAG main
 )
