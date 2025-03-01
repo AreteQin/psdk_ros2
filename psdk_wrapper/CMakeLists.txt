@@ -41,6 +41,7 @@ FetchContent_Declare(
   Payload_SDK
   GIT_REPOSITORY https://github.com/AreteQin/PayloadSDK.git
 #  GIT_TAG V3.8.1
+        GIT_TAG main
 )
 
 FetchContent_GetProperties(Payload_SDK)
