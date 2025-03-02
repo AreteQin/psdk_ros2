@@ -44,11 +44,8 @@ FetchContent_Declare(
         GIT_TAG main
 )
 
-FetchContent_GetProperties(Payload_SDK)
-if(NOT Payload_SDK_POPULATED)
-  FetchContent_Populate(Payload_SDK)
-  message(STATUS "Payload_SDK_SOURCE_DIR: ${payload_sdk_SOURCE_DIR}")
-endif()
+FetchContent_MakeAvailable(Payload_SDK)
+message(STATUS "Payload_SDK_SOURCE_DIR: ${Payload_SDK_SOURCE_DIR}")
 
 # Set the path to the fetched content
 set(PSDK_PATH ${payload_sdk_SOURCE_DIR})
