@@ -31,7 +31,8 @@ namespace psdk_ros2
 {
 PSDKWrapper::PSDKWrapper(const std::string &node_name)
     : rclcpp_lifecycle::LifecycleNode(
-          node_name, "", rclcpp::NodeOptions().use_intra_process_comms(true))
+          node_name, "",
+          rclcpp::NodeOptions().use_intra_process_comms(true))
 // .arguments(
 //               {"--ros-args", "-r",
 //                node_name + ":" + std::string("__node:=") + node_name}))
@@ -270,154 +271,160 @@ PSDKWrapper::on_shutdown(const rclcpp_lifecycle::State &state)
   return CallbackReturn::SUCCESS;
 }
 
+// bool
+// PSDKWrapper::set_environment()
+// {
+//   RCLCPP_INFO(get_logger(), "Setting environment");
+//   T_DjiReturnCode return_code;
+//   T_DjiOsalHandler osal_handler = {0};
+//   T_DjiHalUartHandler uart_handler = {0};
+//   T_DjiFileSystemHandler file_system_handler = {0};
+//   T_DjiSocketHandler socket_handler{0};
+//   T_DjiUserLinkConfig linkConfig;
+//
+//   socket_handler.Socket = Osal_Socket;
+//   socket_handler.Bind = Osal_Bind;
+//   socket_handler.Close = Osal_Close;
+//   socket_handler.UdpSendData = Osal_UdpSendData;
+//   socket_handler.UdpRecvData = Osal_UdpRecvData;
+//   socket_handler.TcpListen = Osal_TcpListen;
+//   socket_handler.TcpAccept = Osal_TcpAccept;
+//   socket_handler.TcpConnect = Osal_TcpConnect;
+//   socket_handler.TcpSendData = Osal_TcpSendData;
+//   socket_handler.TcpRecvData = Osal_TcpRecvData;
+//
+//   osal_handler.TaskCreate = Osal_TaskCreate;
+//   osal_handler.TaskDestroy = Osal_TaskDestroy;
+//   osal_handler.TaskSleepMs = Osal_TaskSleepMs;
+//   osal_handler.MutexCreate = Osal_MutexCreate;
+//   osal_handler.MutexDestroy = Osal_MutexDestroy;
+//   osal_handler.MutexLock = Osal_MutexLock;
+//   osal_handler.MutexUnlock = Osal_MutexUnlock;
+//   osal_handler.SemaphoreCreate = Osal_SemaphoreCreate;
+//   osal_handler.SemaphoreDestroy = Osal_SemaphoreDestroy;
+//   osal_handler.SemaphoreWait = Osal_SemaphoreWait;
+//   osal_handler.SemaphoreTimedWait = Osal_SemaphoreTimedWait;
+//   osal_handler.SemaphorePost = Osal_SemaphorePost;
+//   osal_handler.Malloc = Osal_Malloc;
+//   osal_handler.Free = Osal_Free;
+//   osal_handler.GetTimeMs = Osal_GetTimeMs;
+//   osal_handler.GetTimeUs = Osal_GetTimeUs;
+//   osal_handler.GetRandomNum = Osal_GetRandomNum;
+//
+//   uart_handler.UartInit = HalUart_Init;
+//   uart_handler.UartDeInit = HalUart_DeInit;
+//   uart_handler.UartWriteData = HalUart_WriteData;
+//   uart_handler.UartReadData = HalUart_ReadData;
+//   uart_handler.UartGetStatus = HalUart_GetStatus;
+//
+//   file_system_handler.FileOpen = Osal_FileOpen;
+//   file_system_handler.FileClose = Osal_FileClose;
+//   file_system_handler.FileWrite = Osal_FileWrite;
+//   file_system_handler.FileRead = Osal_FileRead;
+//   file_system_handler.FileSync = Osal_FileSync;
+//   file_system_handler.FileSeek = Osal_FileSeek;
+//   file_system_handler.DirOpen = Osal_DirOpen;
+//   file_system_handler.DirClose = Osal_DirClose;
+//   file_system_handler.DirRead = Osal_DirRead;
+//   file_system_handler.Mkdir = Osal_Mkdir;
+//   file_system_handler.Unlink = Osal_Unlink;
+//   file_system_handler.Rename = Osal_Rename;
+//   file_system_handler.Stat = Osal_Stat;
+//
+//   return_code = DjiPlatform_RegOsalHandler(&osal_handler);
+//   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//   {
+//     RCLCPP_ERROR(get_logger(),
+//                  "Register OSAL handler error. Error code is: %ld",
+//                  return_code);
+//     return false;
+//   }
+//   RCLCPP_INFO(get_logger(), "Registered OSAL handler");
+//
+//   return_code = DjiPlatform_RegHalUartHandler(&uart_handler);
+//   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//   {
+//     RCLCPP_ERROR(get_logger(), "Register HAL handler error. Error code is: %ld",
+//                  return_code);
+//     return false;
+//   }
+//   RCLCPP_INFO(get_logger(), "Registered HAL handler");
+//
+//   return_code = DjiUserConfigManager_LoadConfiguration(
+//       params_.link_config_file_path.c_str());
+//   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//   {
+//     RCLCPP_ERROR(get_logger(),
+//                  "Configuration file could not be loaded. Error code is: %ld",
+//                  return_code);
+//     return false;
+//   }
+//   RCLCPP_INFO(get_logger(), "Loaded configuration file");
+//   DjiUserConfigManager_GetLinkConfig(&linkConfig);
+//   if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_USB_BULK_DEVICE)
+//   {
+//     RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_USB_BULK_DEVICE");
+//     T_DjiHalUsbBulkHandler usb_bulk_handler;
+//     usb_bulk_handler.UsbBulkInit = HalUsbBulk_Init;
+//     usb_bulk_handler.UsbBulkDeInit = HalUsbBulk_DeInit;
+//     usb_bulk_handler.UsbBulkWriteData = HalUsbBulk_WriteData;
+//     usb_bulk_handler.UsbBulkReadData = HalUsbBulk_ReadData;
+//     usb_bulk_handler.UsbBulkGetDeviceInfo = HalUsbBulk_GetDeviceInfo;
+//     return_code = DjiPlatform_RegHalUsbBulkHandler(&usb_bulk_handler);
+//     if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//     {
+//       RCLCPP_ERROR(get_logger(),
+//                    "Register HAL USB BULK handler error. Error code is: %ld",
+//                    return_code);
+//       return false;
+//     }
+//   }
+//   else if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_NETWORK_DEVICE)
+//   {
+//     RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_AND_NETWORK_DEVICE");
+//     T_DjiHalNetworkHandler network_handler;
+//     network_handler.NetworkInit = HalNetWork_Init;
+//     network_handler.NetworkDeInit = HalNetWork_DeInit;
+//     network_handler.NetworkGetDeviceInfo = HalNetWork_GetDeviceInfo;
+//     return_code = DjiPlatform_RegHalNetworkHandler(&network_handler);
+//     if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//     {
+//       RCLCPP_ERROR(get_logger(),
+//                    "Register HAL Network handler error. Error code is: %ld",
+//                    return_code);
+//       return false;
+//     }
+//   }
+//   else
+//   {
+//     RCLCPP_INFO(get_logger(), "Using DJI_USE_ONLY_UART");
+//   }
+//
+//   return_code = DjiPlatform_RegSocketHandler(&socket_handler);
+//   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//   {
+//     RCLCPP_ERROR(get_logger(),
+//                  "Register OSAL SOCKET handler error. Error code is: %ld",
+//                  return_code);
+//     return false;
+//   }
+//
+//   return_code = DjiPlatform_RegFileSystemHandler(&file_system_handler);
+//   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+//   {
+//     RCLCPP_ERROR(get_logger(),
+//                  "Register OSAL filesystem handler error.Error code is: %ld",
+//                  return_code);
+//     return false;
+//   }
+//   RCLCPP_INFO(get_logger(), "Environment has been set!");
+//   return true;
+// }
+
 bool
 PSDKWrapper::set_environment()
 {
   RCLCPP_INFO(get_logger(), "Setting environment");
-  // T_DjiReturnCode return_code;
-  // T_DjiOsalHandler osal_handler = {0};
-  // T_DjiHalUartHandler uart_handler = {0};
-  // T_DjiFileSystemHandler file_system_handler = {0};
-  // T_DjiSocketHandler socket_handler{0};
-  // T_DjiUserLinkConfig linkConfig;
-  //
-  // socket_handler.Socket = Osal_Socket;
-  // socket_handler.Bind = Osal_Bind;
-  // socket_handler.Close = Osal_Close;
-  // socket_handler.UdpSendData = Osal_UdpSendData;
-  // socket_handler.UdpRecvData = Osal_UdpRecvData;
-  // socket_handler.TcpListen = Osal_TcpListen;
-  // socket_handler.TcpAccept = Osal_TcpAccept;
-  // socket_handler.TcpConnect = Osal_TcpConnect;
-  // socket_handler.TcpSendData = Osal_TcpSendData;
-  // socket_handler.TcpRecvData = Osal_TcpRecvData;
-  //
-  // osal_handler.TaskCreate = Osal_TaskCreate;
-  // osal_handler.TaskDestroy = Osal_TaskDestroy;
-  // osal_handler.TaskSleepMs = Osal_TaskSleepMs;
-  // osal_handler.MutexCreate = Osal_MutexCreate;
-  // osal_handler.MutexDestroy = Osal_MutexDestroy;
-  // osal_handler.MutexLock = Osal_MutexLock;
-  // osal_handler.MutexUnlock = Osal_MutexUnlock;
-  // osal_handler.SemaphoreCreate = Osal_SemaphoreCreate;
-  // osal_handler.SemaphoreDestroy = Osal_SemaphoreDestroy;
-  // osal_handler.SemaphoreWait = Osal_SemaphoreWait;
-  // osal_handler.SemaphoreTimedWait = Osal_SemaphoreTimedWait;
-  // osal_handler.SemaphorePost = Osal_SemaphorePost;
-  // osal_handler.Malloc = Osal_Malloc;
-  // osal_handler.Free = Osal_Free;
-  // osal_handler.GetTimeMs = Osal_GetTimeMs;
-  // osal_handler.GetTimeUs = Osal_GetTimeUs;
-  // osal_handler.GetRandomNum = Osal_GetRandomNum;
-  //
-  // uart_handler.UartInit = HalUart_Init;
-  // uart_handler.UartDeInit = HalUart_DeInit;
-  // uart_handler.UartWriteData = HalUart_WriteData;
-  // uart_handler.UartReadData = HalUart_ReadData;
-  // uart_handler.UartGetStatus = HalUart_GetStatus;
-  //
-  // file_system_handler.FileOpen = Osal_FileOpen;
-  // file_system_handler.FileClose = Osal_FileClose;
-  // file_system_handler.FileWrite = Osal_FileWrite;
-  // file_system_handler.FileRead = Osal_FileRead;
-  // file_system_handler.FileSync = Osal_FileSync;
-  // file_system_handler.FileSeek = Osal_FileSeek;
-  // file_system_handler.DirOpen = Osal_DirOpen;
-  // file_system_handler.DirClose = Osal_DirClose;
-  // file_system_handler.DirRead = Osal_DirRead;
-  // file_system_handler.Mkdir = Osal_Mkdir;
-  // file_system_handler.Unlink = Osal_Unlink;
-  // file_system_handler.Rename = Osal_Rename;
-  // file_system_handler.Stat = Osal_Stat;
-  //
-  // return_code = DjiPlatform_RegOsalHandler(&osal_handler);
-  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  // {
-  //   RCLCPP_ERROR(get_logger(),
-  //                "Register OSAL handler error. Error code is: %ld",
-  //                return_code);
-  //   return false;
-  // }
-  // RCLCPP_INFO(get_logger(), "Registered OSAL handler");
-  //
-  // return_code = DjiPlatform_RegHalUartHandler(&uart_handler);
-  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  // {
-  //   RCLCPP_ERROR(get_logger(), "Register HAL handler error. Error code is:
-  //   %ld",
-  //                return_code);
-  //   return false;
-  // }
-  // RCLCPP_INFO(get_logger(), "Registered HAL handler");
-  //
-  // return_code = DjiUserConfigManager_LoadConfiguration(
-  //     params_.link_config_file_path.c_str());
-  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  // {
-  //   RCLCPP_ERROR(get_logger(),
-  //                "Configuration file could not be loaded. Error code is:
-  //                %ld", return_code);
-  //   return false;
-  // }
-  // RCLCPP_INFO(get_logger(), "Loaded configuration file");
-  // DjiUserConfigManager_GetLinkConfig(&linkConfig);
-  // if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_USB_BULK_DEVICE)
-  // {
-  //   RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_USB_BULK_DEVICE");
-  //   T_DjiHalUsbBulkHandler usb_bulk_handler;
-  //   usb_bulk_handler.UsbBulkInit = HalUsbBulk_Init;
-  //   usb_bulk_handler.UsbBulkDeInit = HalUsbBulk_DeInit;
-  //   usb_bulk_handler.UsbBulkWriteData = HalUsbBulk_WriteData;
-  //   usb_bulk_handler.UsbBulkReadData = HalUsbBulk_ReadData;
-  //   usb_bulk_handler.UsbBulkGetDeviceInfo = HalUsbBulk_GetDeviceInfo;
-  //   return_code = DjiPlatform_RegHalUsbBulkHandler(&usb_bulk_handler);
-  //   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  //   {
-  //     RCLCPP_ERROR(get_logger(),
-  //                  "Register HAL USB BULK handler error. Error code is: %ld",
-  //                  return_code);
-  //     return false;
-  //   }
-  // }
-  // else if (linkConfig.type ==
-  // DJI_USER_LINK_CONFIG_USE_UART_AND_NETWORK_DEVICE)
-  // {
-  //   RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_AND_NETWORK_DEVICE");
-  //   T_DjiHalNetworkHandler network_handler;
-  //   network_handler.NetworkInit = HalNetWork_Init;
-  //   network_handler.NetworkDeInit = HalNetWork_DeInit;
-  //   network_handler.NetworkGetDeviceInfo = HalNetWork_GetDeviceInfo;
-  //   return_code = DjiPlatform_RegHalNetworkHandler(&network_handler);
-  //   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  //   {
-  //     RCLCPP_ERROR(get_logger(),
-  //                  "Register HAL Network handler error. Error code is: %ld",
-  //                  return_code);
-  //     return false;
-  //   }
-  // }
-  // else
-  // {
-  //   RCLCPP_INFO(get_logger(), "Using DJI_USE_ONLY_UART");
-  // }
-  //
-  // return_code = DjiPlatform_RegSocketHandler(&socket_handler);
-  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  // {
-  //   RCLCPP_ERROR(get_logger(),
-  //                "Register OSAL SOCKET handler error. Error code is: %ld",
-  //                return_code);
-  //   return false;
-  // }
-  //
-  // return_code = DjiPlatform_RegFileSystemHandler(&file_system_handler);
-  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  // {
-  //   RCLCPP_ERROR(get_logger(),
-  //                "Register OSAL filesystem handler error.Error code is: %ld",
-  //                return_code);
-  //   return false;
-  // }
   T_DjiReturnCode returnCode;
   T_DjiOsalHandler osalHandler = {0};
   T_DjiHalUartHandler uartHandler = {0};

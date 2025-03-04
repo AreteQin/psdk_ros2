@@ -5,7 +5,9 @@ sudo apt-get install nlohmann-json3-dev
 
 ## Usage
 ```Bash
-ros2 launch psdk_wrapper wrapper.launch.py link_config_file_path:=/home/qin/PayloadSDK/cfg/link_config.json psdk_params_file_path:=/home/qin/PayloadSDK/cfg/psdk_params.yaml
+ros2 launch psdk_wrapper wrapper.launch.py 
+link_config_file_path:=/home/qin/PayloadSDK/cfg/link_config.json 
+psdk_params_file_path:=/home/qin/PayloadSDK/cfg/psdk_params.yaml
 ```
 
 # psdk_ros2
