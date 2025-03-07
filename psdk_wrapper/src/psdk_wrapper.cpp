@@ -546,12 +546,12 @@ PSDKWrapper::set_environment()
     return false;
   }
 
-  returnCode = DjiLogger_AddConsole(&printConsole);
+  // returnCode = DjiLogger_AddConsole(&printConsole);
   if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
       throw std::runtime_error("Add printf console error.");
   }
 
-  returnCode = DjiLogger_AddConsole(&localRecordConsole);
+  // returnCode = DjiLogger_AddConsole(&localRecordConsole);
   if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
       throw std::runtime_error("Add printf console error.");
   }
