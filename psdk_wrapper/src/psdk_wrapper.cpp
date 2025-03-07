@@ -425,7 +425,7 @@ bool
 PSDKWrapper::set_environment()
 {
   RCLCPP_INFO(get_logger(), "Setting environment");
-  T_DjiReturnCode returnCode;
+  T_DjiReturnCode return_code;
   T_DjiOsalHandler osalHandler = {0};
   T_DjiHalUartHandler uartHandler = {0};
   T_DjiHalUsbBulkHandler usbBulkHandler = {0};
@@ -501,60 +501,75 @@ PSDKWrapper::set_environment()
   fileSystemHandler.Mkdir = Osal_Mkdir, fileSystemHandler.Unlink = Osal_Unlink,
   fileSystemHandler.Rename = Osal_Rename, fileSystemHandler.Stat = Osal_Stat,
 
-  returnCode = DjiPlatform_RegOsalHandler(&osalHandler);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  return_code = DjiPlatform_RegOsalHandler(&osalHandler);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
-    throw std::runtime_error("Register osal handler error.");
+    // throw std::runtime_error("Register osal handler error.");
+    RCLCPP_ERROR(get_logger(),
+                 "Register OSAL handler error. Error code is: %ld",
+                 return_code);
   }
 
-  returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  return_code = DjiPlatform_RegHalUartHandler(&uartHandler);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
-    throw std::runtime_error("Register hal uart handler error.");
+    // throw std::runtime_error("Register hal uart handler error.");
+        RCLCPP_ERROR(get_logger(),
+                         "Register HAL handler error. Error code is: %ld",
+                         return_code);
   }
 
-  returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  return_code = DjiPlatform_RegHalNetworkHandler(&networkHandler);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
-    throw std::runtime_error("Register hal network handler error");
+    // throw std::runtime_error("Register hal network handler error");
+        RCLCPP_ERROR(get_logger(),
+                         "Register HAL Network handler error. Error code is: %ld",
+                         return_code);
   }
 
   // Attention: if you want to use camera stream view function, please uncomment
   // it.
-  returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  return_code = DjiPlatform_RegSocketHandler(&socketHandler);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
-    throw std::runtime_error("register osal socket handler error");
+    // throw std::runtime_error("register osal socket handler error");
+        RCLCPP_ERROR(get_logger(),
+                         "Register OSAL SOCKET handler error. Error code is: %ld",
+                         return_code);
   }
 
-  returnCode = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  return_code = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
-    throw std::runtime_error("Register osal filesystem handler error.");
+    // throw std::runtime_error("Register osal filesystem handler error.");
+        RCLCPP_ERROR(get_logger(),
+                         "Register OSAL filesystem handler error.Error code is: %ld",
+                         return_code);
   }
 
   // if (DjiUser_LocalWriteFsInit(DJI_LOG_PATH) !=
   // DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
   //     throw std::runtime_error("File system init error.");
   // }
-  returnCode = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  return_code = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
+  if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     RCLCPP_ERROR(get_logger(),
                  "Register OSAL filesystem handler error.Error code is: %ld",
-                 returnCode);
+                 return_code);
     return false;
   }
 
-  // returnCode = DjiLogger_AddConsole(&printConsole);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-      throw std::runtime_error("Add printf console error.");
-  }
-
-  // returnCode = DjiLogger_AddConsole(&localRecordConsole);
-  if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-      throw std::runtime_error("Add printf console error.");
-  }
+  // return_code = DjiLogger_AddConsole(&printConsole);
+  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+  //     throw std::runtime_error("Add printf console error.");
+  // }
+  //
+  // return_code = DjiLogger_AddConsole(&localRecordConsole);
+  // if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+  //     throw std::runtime_error("Add printf console error.");
+  // }
 
   RCLCPP_INFO(get_logger(), "Environment has been set!");
   return true;
