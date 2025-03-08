@@ -18,6 +18,7 @@
  */
 
 #include "psdk_wrapper/psdk_wrapper.hpp"
+
 #include <glog/logging.h>
 
 std::shared_ptr<psdk_ros2::TelemetryModule> psdk_ros2::global_telemetry_ptr_;
@@ -32,8 +33,7 @@ namespace psdk_ros2
 {
 PSDKWrapper::PSDKWrapper(const std::string &node_name)
     : rclcpp_lifecycle::LifecycleNode(
-          node_name, "",
-          rclcpp::NodeOptions().use_intra_process_comms(true))
+          node_name, "", rclcpp::NodeOptions().use_intra_process_comms(true))
 // .arguments(
 //               {"--ros-args", "-r",
 //                node_name + ":" + std::string("__node:=") + node_name}))
@@ -345,7 +345,8 @@ PSDKWrapper::on_shutdown(const rclcpp_lifecycle::State &state)
 //   return_code = DjiPlatform_RegHalUartHandler(&uart_handler);
 //   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
 //   {
-//     RCLCPP_ERROR(get_logger(), "Register HAL handler error. Error code is: %ld",
+//     RCLCPP_ERROR(get_logger(), "Register HAL handler error. Error code is:
+//     %ld",
 //                  return_code);
 //     return false;
 //   }
@@ -356,13 +357,14 @@ PSDKWrapper::on_shutdown(const rclcpp_lifecycle::State &state)
 //   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
 //   {
 //     RCLCPP_ERROR(get_logger(),
-//                  "Configuration file could not be loaded. Error code is: %ld",
-//                  return_code);
+//                  "Configuration file could not be loaded. Error code is:
+//                  %ld", return_code);
 //     return false;
 //   }
 //   RCLCPP_INFO(get_logger(), "Loaded configuration file");
 //   DjiUserConfigManager_GetLinkConfig(&linkConfig);
-//   // if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_USB_BULK_DEVICE)
+//   // if (linkConfig.type ==
+//   DJI_USER_LINK_CONFIG_USE_UART_AND_USB_BULK_DEVICE)
 //   // {
 //   //   RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_USB_BULK_DEVICE");
 //   //   T_DjiHalUsbBulkHandler usb_bulk_handler;
@@ -375,12 +377,14 @@ PSDKWrapper::on_shutdown(const rclcpp_lifecycle::State &state)
 //   //   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
 //   //   {
 //   //     RCLCPP_ERROR(get_logger(),
-//   //                  "Register HAL USB BULK handler error. Error code is: %ld",
+//   //                  "Register HAL USB BULK handler error. Error code is:
+//   %ld",
 //   //                  return_code);
 //   //     return false;
 //   //   }
 //   // }
-//   // else if (linkConfig.type == DJI_USER_LINK_CONFIG_USE_UART_AND_NETWORK_DEVICE)
+//   // else if (linkConfig.type ==
+//   DJI_USER_LINK_CONFIG_USE_UART_AND_NETWORK_DEVICE)
 //   // {
 //     RCLCPP_INFO(get_logger(), "Using DJI_USE_UART_AND_NETWORK_DEVICE");
 //     T_DjiHalNetworkHandler network_handler;
@@ -479,6 +483,11 @@ PSDKWrapper::set_environment()
   // localRecordConsole.isSupportColor = false;
 
   uartHandler.UartInit = HalUart_Init;
+  // print uart1Name
+  RCLCPP_INFO(get_logger(), "UART1 device path: %s",
+              linkConfig.uartConfig.uart1DeviceName);
+  RCLCPP_INFO(get_logger(), "UART2 device path: %s",
+              linkConfig.uartConfig.uart2DeviceName);
   uartHandler.UartDeInit = HalUart_DeInit;
   uartHandler.UartWriteData = HalUart_WriteData;
   uartHandler.UartReadData = HalUart_ReadData;
@@ -517,18 +526,17 @@ PSDKWrapper::set_environment()
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     // throw std::runtime_error("Register hal uart handler error.");
-        RCLCPP_ERROR(get_logger(),
-                         "Register HAL handler error. Error code is: %ld",
-                         return_code);
+    RCLCPP_ERROR(get_logger(), "Register HAL handler error. Error code is: %ld",
+                 return_code);
   }
 
   return_code = DjiPlatform_RegHalNetworkHandler(&networkHandler);
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     // throw std::runtime_error("Register hal network handler error");
-        RCLCPP_ERROR(get_logger(),
-                         "Register HAL Network handler error. Error code is: %ld",
-                         return_code);
+    RCLCPP_ERROR(get_logger(),
+                 "Register HAL Network handler error. Error code is: %ld",
+                 return_code);
   }
 
   // Attention: if you want to use camera stream view function, please uncomment
@@ -537,18 +545,18 @@ PSDKWrapper::set_environment()
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     // throw std::runtime_error("register osal socket handler error");
-        RCLCPP_ERROR(get_logger(),
-                         "Register OSAL SOCKET handler error. Error code is: %ld",
-                         return_code);
+    RCLCPP_ERROR(get_logger(),
+                 "Register OSAL SOCKET handler error. Error code is: %ld",
+                 return_code);
   }
 
   return_code = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
   if (return_code != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
   {
     // throw std::runtime_error("Register osal filesystem handler error.");
-        RCLCPP_ERROR(get_logger(),
-                         "Register OSAL filesystem handler error.Error code is: %ld",
-                         return_code);
+    RCLCPP_ERROR(get_logger(),
+                 "Register OSAL filesystem handler error.Error code is: %ld",
+                 return_code);
   }
 
   // if (DjiUser_LocalWriteFsInit(DJI_LOG_PATH) !=
