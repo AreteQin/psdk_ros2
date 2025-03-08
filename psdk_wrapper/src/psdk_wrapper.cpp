@@ -479,7 +479,6 @@ PSDKWrapper::set_environment()
   // localRecordConsole.isSupportColor = false;
 
   uartHandler.UartInit = HalUart_Init;
-  LOG(INFO) << "uartInit: " << uartHandler.UartInit;
   uartHandler.UartDeInit = HalUart_DeInit;
   uartHandler.UartWriteData = HalUart_WriteData;
   uartHandler.UartReadData = HalUart_ReadData;
