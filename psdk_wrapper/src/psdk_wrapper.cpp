@@ -433,13 +433,12 @@ PSDKWrapper::set_environment()
   T_DjiReturnCode return_code;
   T_DjiOsalHandler osalHandler = {0};
   T_DjiHalUartHandler uartHandler = {0};
-  T_DjiHalUsbBulkHandler usbBulkHandler = {0};
-  T_DjiLoggerConsole printConsole;
-  T_DjiLoggerConsole localRecordConsole;
+  // T_DjiHalUsbBulkHandler usbBulkHandler = {0};
+  // T_DjiLoggerConsole printConsole;
+  // T_DjiLoggerConsole localRecordConsole;
   T_DjiFileSystemHandler fileSystemHandler = {0};
   T_DjiSocketHandler socketHandler{0};
   T_DjiHalNetworkHandler networkHandler = {0};
-  T_DjiUserLinkConfig linkConfig;
 
   networkHandler.NetworkInit = HalNetWork_Init;
   networkHandler.NetworkDeInit = HalNetWork_DeInit;
@@ -483,33 +482,16 @@ PSDKWrapper::set_environment()
   // localRecordConsole.isSupportColor = false;
 
   uartHandler.UartInit = HalUart_Init;
-  // Load the configuration before accessing it
-  return_code = DjiUserConfigManager_LoadConfiguration(
-      params_.link_config_file_path.c_str());
-  if (return_code == DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
-  {
-    DjiUserConfigManager_GetLinkConfig(&linkConfig);
-    RCLCPP_INFO(get_logger(), "UART1 device path: %s",
-                linkConfig.uartConfig.uart1DeviceName);
-    RCLCPP_INFO(get_logger(), "UART2 device path: %s",
-                linkConfig.uartConfig.uart2DeviceName);
-  }
-  else
-  {
-    RCLCPP_ERROR(get_logger(),
-                 "Failed to load link configuration, error code: %ld",
-                 return_code);
-  }
   uartHandler.UartDeInit = HalUart_DeInit;
   uartHandler.UartWriteData = HalUart_WriteData;
   uartHandler.UartReadData = HalUart_ReadData;
   uartHandler.UartGetStatus = HalUart_GetStatus;
 
-  usbBulkHandler.UsbBulkInit = HalUsbBulk_Init;
-  usbBulkHandler.UsbBulkDeInit = HalUsbBulk_DeInit;
-  usbBulkHandler.UsbBulkWriteData = HalUsbBulk_WriteData;
-  usbBulkHandler.UsbBulkReadData = HalUsbBulk_ReadData;
-  usbBulkHandler.UsbBulkGetDeviceInfo = HalUsbBulk_GetDeviceInfo;
+  // usbBulkHandler.UsbBulkInit = HalUsbBulk_Init;
+  // usbBulkHandler.UsbBulkDeInit = HalUsbBulk_DeInit;
+  // usbBulkHandler.UsbBulkWriteData = HalUsbBulk_WriteData;
+  // usbBulkHandler.UsbBulkReadData = HalUsbBulk_ReadData;
+  // usbBulkHandler.UsbBulkGetDeviceInfo = HalUsbBulk_GetDeviceInfo;
 
   fileSystemHandler.FileOpen = Osal_FileOpen;
   fileSystemHandler.FileClose = Osal_FileClose;
