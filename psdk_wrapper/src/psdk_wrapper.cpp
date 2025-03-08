@@ -483,11 +483,23 @@ PSDKWrapper::set_environment()
   // localRecordConsole.isSupportColor = false;
 
   uartHandler.UartInit = HalUart_Init;
-  // print uart1Name
-  RCLCPP_INFO(get_logger(), "UART1 device path: %s",
-              linkConfig.uartConfig.uart1DeviceName);
-  RCLCPP_INFO(get_logger(), "UART2 device path: %s",
-              linkConfig.uartConfig.uart2DeviceName);
+  // Load the configuration before accessing it
+  return_code = DjiUserConfigManager_LoadConfiguration(
+      params_.link_config_file_path.c_str());
+  if (return_code == DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS)
+  {
+    DjiUserConfigManager_GetLinkConfig(&linkConfig);
+    RCLCPP_INFO(get_logger(), "UART1 device path: %s",
+                linkConfig.uartConfig.uart1DeviceName);
+    RCLCPP_INFO(get_logger(), "UART2 device path: %s",
+                linkConfig.uartConfig.uart2DeviceName);
+  }
+  else
+  {
+    RCLCPP_ERROR(get_logger(),
+                 "Failed to load link configuration, error code: %ld",
+                 return_code);
+  }
   uartHandler.UartDeInit = HalUart_DeInit;
   uartHandler.UartWriteData = HalUart_WriteData;
   uartHandler.UartReadData = HalUart_ReadData;
