@@ -13,6 +13,7 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules) # Add elements to list
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -32,6 +33,9 @@ find_package(tf2_ros REQUIRED)
 find_package(psdk_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(nlohmann_json REQUIRED)
+
+find_package(Glog REQUIRED)
+include_directories(${GLOG_INCLUDE_DIRS})
 
 # FetchContent module
 include(FetchContent)
@@ -185,6 +189,7 @@ target_link_libraries(
   psdk_wrapper_libs
   ${PSDK_LIB}
   nlohmann_json::nlohmann_json
+        ${GLOG_LIBRARIES}
 )
 
 target_link_libraries(
