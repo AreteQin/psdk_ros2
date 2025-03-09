@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
 {
   rclcpp::init(argc, argv);
   auto node = std::make_shared<CameraStreamCompressor>();
+  node->declare_parameter<std::string>("image_transport", "compressed");
   rclcpp::spin(node);
   rclcpp::shutdown();
   return 0;
