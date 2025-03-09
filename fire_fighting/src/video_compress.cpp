@@ -2,14 +2,15 @@
 #include "sensor_msgs/msg/image.hpp"
 #include "cv_bridge/cv_bridge.h"
 #include "opencv2/opencv.hpp"
-#include "image_transport/image_transport.hpp"  // Added for image_transport
+#include "image_transport/image_transport.hpp"
 
 // Include the service interface header from psdk_interfaces package
 #include "psdk_interfaces/srv/camera_setup_streaming.hpp"
 
 using namespace std::chrono_literals;
 
-class CameraStreamCompressor : public rclcpp::Node
+class CameraStreamCompressor : public rclcpp::Node,
+                              public std::enable_shared_from_this<CameraStreamCompressor>
 {
 public:
   CameraStreamCompressor() : Node("camera_stream_compressor")
@@ -48,15 +49,13 @@ public:
     // Define QoS for sensor data streams
     auto sensor_qos = rclcpp::SensorDataQoS();
 
-    RCLCPP_INFO(this->get_logger(), "Using SensorDataQoS for camera stream (best_effort reliability)");
-
     // Subscribe to the main camera stream topic with SensorDataQoS - unchanged
     image_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
       "/wrapper/psdk_ros2/main_camera_stream", sensor_qos,
       std::bind(&CameraStreamCompressor::imageCallback, this, std::placeholders::_1));
 
     // Create image_transport instance
-    image_transport_ = std::make_shared<image_transport::ImageTransport>(this->shared_from_this());
+    image_transport_ = std::make_shared<image_transport::ImageTransport>(shared_from_this());
 
     // Create publisher using image_transport for compression
     image_pub_ = image_transport_->advertise("/wrapper/psdk_ros2/compressed_camera_stream", 5);
