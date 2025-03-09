@@ -61,7 +61,7 @@ public:
 
     // Create a publisher with the same SensorDataQoS
     image_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
-      "/wrapper/psdk_ros2/compressed_camera_stream", sensor_qos);
+      "/wrapper/psdk_ros2/compressed_camera_stream", 5);
   }
 
 private:
