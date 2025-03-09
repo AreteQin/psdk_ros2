@@ -87,12 +87,12 @@ def generate_launch_description():
     )
 
     # Add video compress node
-    video_compress_node = Node(
-        package="fire_fighting",
-        executable="video_compress",
-        name="video_compress",
-        output="screen",
-    )
+    # video_compress_node = Node(
+    #     package="fire_fighting",
+    #     executable="video_compress",
+    #     name="video_compress",
+    #     output="screen",
+    # )
 
     # Configure lifecycle node
     wrapper_configure_trans_event = EmitEvent(
