@@ -2,6 +2,7 @@
 #include "sensor_msgs/msg/image.hpp"
 #include "cv_bridge/cv_bridge.h"
 #include "opencv2/opencv.hpp"
+#include "image_transport/image_transport.hpp"
 
 // Include the service interface header from psdk_interfaces package
 #include "psdk_interfaces/srv/camera_setup_streaming.hpp"
@@ -25,9 +26,9 @@ public:
     // Create the service request and populate its fields
     auto request = std::make_shared<psdk_interfaces::srv::CameraSetupStreaming::Request>();
     request->payload_index = 1;
-    request->camera_source = 2; // as per your parameter (e.g. second camera)
-    request->start_stop = true; // true to start streaming
-    request->decoded_output = true; // true for decoded output
+    request->camera_source = 2;
+    request->start_stop = true;
+    request->decoded_output = true;
 
     // Send the service request synchronously
     auto result_future = camera_setup_client_->async_send_request(request);
@@ -44,52 +45,48 @@ public:
       RCLCPP_ERROR(this->get_logger(), "Failed to call camera stream service.");
     }
 
-    // Define QoS for sensor data streams
-    // This matches the publisher QoS to ensure compatibility:
-    // - History: Keep last
-    // - Depth: 5
-    // - Reliability: Best effort
-    // - Durability: Volatile
-    auto sensor_qos = rclcpp::SensorDataQoS();
+    // Configure image transport (instead of direct publishers/subscribers)
+    image_transport_ = std::make_shared<image_transport::ImageTransport>(this->shared_from_this());
 
-    RCLCPP_INFO(this->get_logger(), "Using SensorDataQoS for camera stream (best_effort reliability)");
-
-    // Subscribe to the main camera stream topic with SensorDataQoS
-    image_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      "/wrapper/psdk_ros2/main_camera_stream", sensor_qos,
+    // Subscribe to the main camera stream
+    image_sub_ = image_transport_->subscribe(
+      "/wrapper/psdk_ros2/main_camera_stream", 5,
       std::bind(&CameraStreamCompressor::imageCallback, this, std::placeholders::_1));
 
-    // Create a publisher with the same SensorDataQoS
-    image_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
-      "/wrapper/psdk_ros2/compressed_camera_stream", 5);
+    // Create a publisher
+    image_pub_ = image_transport_->advertise("/wrapper/psdk_ros2/compressed_camera_stream", 5);
+
+    // Set compression parameters (optional)
+    this->declare_parameter("jpeg_quality", 80);
+    this->declare_parameter("png_level", 6);
+
+    RCLCPP_INFO(this->get_logger(), "Video compression node initialized with image_transport");
   }
 
 private:
-  void imageCallback(const sensor_msgs::msg::Image::SharedPtr msg)
+  void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr& msg)
   {
     try {
-      // Convert the incoming ROS image message to an OpenCV image (BGR8 encoding)
-      cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(msg, "bgr8");
+      // We can optionally resize the image before passing to image_transport
+      cv_bridge::CvImageConstPtr cv_ptr = cv_bridge::toCvShare(msg, "bgr8");
 
-      // Resize or compress the image as needed (here we resize to 640x480)
       cv::Mat resized;
       cv::resize(cv_ptr->image, resized, cv::Size(640, 480));
 
-      // (Optional) Further compression can be done via imencode if you need JPEG/PNG compression.
-      // For this example, we simply publish the resized image.
-
-      // Convert back to a ROS image message
+      // Convert back to ROS message and publish
+      // image_transport will handle compression based on subscription type
       auto out_msg = cv_bridge::CvImage(msg->header, "bgr8", resized).toImageMsg();
-      image_pub_->publish(*out_msg);
+      image_pub_.publish(out_msg);
     } catch (cv_bridge::Exception &e) {
       RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
     }
   }
 
-  // Member variables: service client, image subscriber, and publisher
+  // Member variables
   rclcpp::Client<psdk_interfaces::srv::CameraSetupStreaming>::SharedPtr camera_setup_client_;
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_sub_;
-  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_pub_;
+  std::shared_ptr<image_transport::ImageTransport> image_transport_;
+  image_transport::Subscriber image_sub_;
+  image_transport::Publisher image_pub_;
 };
 
 int main(int argc, char *argv[])
