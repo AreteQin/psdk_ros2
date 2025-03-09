@@ -8,8 +8,6 @@ sudo apt install nlohmann-json3-dev libgoogle-glog-dev -y
 . ~/foxy_ws/install/setup.bash
 
 ros2 launch psdk_wrapper wrapper.launch.py link_config_file_path:=/home/qin/PayloadSDK/cfg/link_config.json psdk_params_file_path:=/home/qin/PayloadSDK/cfg/psdk_params.yaml
-
-ros2 service call /wrapper/psdk_ros2/camera_setup_streaming psdk_interfaces/srv/CameraSetupStreaming "{payload_index: 1, camera_source: 2, start_stop: true, decoded_output: true}"
 ```
 
 ## Useful Links
