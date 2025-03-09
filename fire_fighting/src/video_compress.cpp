@@ -44,15 +44,24 @@ public:
       RCLCPP_ERROR(this->get_logger(), "Failed to call camera stream service.");
     }
 
-    // Subscribe to the main camera stream topic.
-    // Note: In this example we assume the topic is of type sensor_msgs::msg::Image.
+    // Define QoS for sensor data streams
+    // This matches the publisher QoS to ensure compatibility:
+    // - History: Keep last
+    // - Depth: 5
+    // - Reliability: Best effort
+    // - Durability: Volatile
+    auto sensor_qos = rclcpp::SensorDataQoS();
+
+    RCLCPP_INFO(this->get_logger(), "Using SensorDataQoS for camera stream (best_effort reliability)");
+
+    // Subscribe to the main camera stream topic with SensorDataQoS
     image_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      "/wrapper/psdk_ros2/main_camera_stream", 10,
+      "/wrapper/psdk_ros2/main_camera_stream", sensor_qos,
       std::bind(&CameraStreamCompressor::imageCallback, this, std::placeholders::_1));
 
-    // Create a publisher to publish the compressed (or resized) image
+    // Create a publisher with the same SensorDataQoS
     image_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
-      "/wrapper/psdk_ros2/compressed_camera_stream", 10);
+      "/wrapper/psdk_ros2/compressed_camera_stream", sensor_qos);
   }
 
 private:
