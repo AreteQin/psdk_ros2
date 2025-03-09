@@ -81,6 +81,11 @@ def generate_launch_description():
             {
                 "link_config_file_path": link_config_file_path,
                 "hms_return_codes_path": hms_return_codes_path,
+                # QoS override for camera stream to match rqt_image_view
+                "qos_overrides./wrapper/psdk_ros2/main_camera_stream.publisher.reliability": "best_effort",
+                "qos_overrides./wrapper/psdk_ros2/main_camera_stream.publisher.durability": "volatile",
+                "qos_overrides./wrapper/psdk_ros2/main_camera_stream.publisher.history": "keep_last",
+                "qos_overrides./wrapper/psdk_ros2/main_camera_stream.publisher.depth": 5
             },
             psdk_params_file_path,
         ],

@@ -1,14 +1,21 @@
 ## Dependences
 ```Bash
-sudo apt-get install nlohmann-json3-dev
+sudo apt install nlohmann-json3-dev libgoogle-glog-dev -y
 ```
 
 ## Usage
 ```Bash
-ros2 launch psdk_wrapper wrapper.launch.py 
-link_config_file_path:=/home/qin/PayloadSDK/cfg/link_config.json 
-psdk_params_file_path:=/home/qin/PayloadSDK/cfg/psdk_params.yaml
+. ~/foxy_ws/install/setup.bash
+
+ros2 launch psdk_wrapper wrapper.launch.py link_config_file_path:=/home/qin/PayloadSDK/cfg/link_config.json psdk_params_file_path:=/home/qin/PayloadSDK/cfg/psdk_params.yaml
+
+ros2 service call /wrapper/psdk_ros2/camera_setup_streaming psdk_interfaces/srv/CameraSetupStreaming "{payload_index: 1, camera_source: 2, start_stop: true, decoded_output: true}"
 ```
+
+## Useful Links
+- [DJI Payload-SDK Parameters](https://developer.dji.com/doc/payload-sdk-tutorial/cn/function-set/basic-function/info-management.html)
+- [DJI Payload-SDK Topics](https://developer.dji.com/onboard-api-reference/group__telem.html)
+- [PSDK_ROS2 Documentation](https://github.com/AreteQin/psdk_ros2/blob/main/docs/documentation/ThePSDKWrapper.md)
 
 # psdk_ros2
 
