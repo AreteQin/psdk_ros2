@@ -8,6 +8,7 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(image_transport REQUIRED)
+find_package(compressed_image_transport REQUIRED)
 
 find_package(psdk_interfaces REQUIRED)  # For the service interface
 find_package(OpenCV 4 REQUIRED)
@@ -30,6 +31,7 @@ ament_target_dependencies(video_compress
         sensor_msgs
         psdk_interfaces
         image_transport
+        compressed_image_transport
 ) # Add other dependencies as needed
 
 # Link OpenCV
