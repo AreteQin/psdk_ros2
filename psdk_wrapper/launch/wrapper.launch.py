@@ -11,7 +11,7 @@ from launch import LaunchDescription
 from launch_ros.substitutions import FindPackageShare
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.actions import EmitEvent, DeclareLaunchArgument
-from launch_ros.actions import LifecycleNode
+from launch_ros.actions import LifecycleNode, Node
 from launch_ros.events.lifecycle import ChangeState
 
 import lifecycle_msgs.msg
@@ -86,6 +86,14 @@ def generate_launch_description():
         ],
     )
 
+    # Add video compress node
+    video_compress_node = Node(
+        package="fire_fighting",
+        executable="video_compress",
+        name="video_compress",
+        output="screen",
+    )
+
     # Configure lifecycle node
     wrapper_configure_trans_event = EmitEvent(
         event=ChangeState(
@@ -111,6 +119,7 @@ def generate_launch_description():
     ld.add_action(declare_link_config_cmd)
     ld.add_action(declare_hms_codes_cmd)
     ld.add_action(wrapper_node)
+    ld.add_action(video_compress_node)  # Add the video compression node
     ld.add_action(wrapper_configure_trans_event)
     ld.add_action(wrapper_activate_trans_event)
 
